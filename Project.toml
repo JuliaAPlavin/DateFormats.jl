@@ -1,0 +1,10 @@
+name = "DateFormats"
+uuid = "44557152-fe0a-4de1-8405-416d90313ce6"
+authors = ["Alexander Plavin <alexander@plav.in>"]
+version = "0.1.0"
+
+[deps]
+Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
+
+[compat]
+julia = "1.5"
