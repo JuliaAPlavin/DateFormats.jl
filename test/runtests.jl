@@ -25,7 +25,7 @@ end
     @test DF.datetime2mjd(missing) === missing
 end
 
-@testset "yeardecimal" begin
+@testset "yeardecimal datetime" begin
     @test DF.yearfrac(Date(2019, 1, 1)) ≈ 0
     @test DF.yearfrac(Date(2019, 12, 31)) ≈ 1 - 1/365
     @test DF.yearfrac(Date(2020, 1, 1)) ≈ 0
@@ -61,12 +61,18 @@ end
     @testset for v in [DateTime(2019, 1, 1, 0, 0, 0, 0), DateTime(2019, 1, 1, 0, 0, 0, 1), DateTime(2019, 12, 31, 23, 59, 59, 999)]
         @test DF.yeardecimal(DF.yeardecimal(v)) == v
     end
+end
 
+@testset "decimal period" begin
     @test DF.yeardecimal(Year(1)) == 1
     @test DF.yeardecimal(Year(123)) == 123
     @test DF.yeardecimal(Month(1)) ≈ 1/12
     @test DF.yeardecimal(Day(3)) ≈ 3/365.2425
     @test DF.yeardecimal(Millisecond(123)) ≈ 123/1000/60/60/24/365.2425
+
+    @test DF.period_decimal(Millisecond, Millisecond(123)) ≈ 123
+    @test DF.period_decimal(Day, Second(456)) ≈ 0.00527777777
+    @test DF.period_decimal(Second, Day(78)) ≈ 6.7392e6
 end
 
 @testset "convert" begin
