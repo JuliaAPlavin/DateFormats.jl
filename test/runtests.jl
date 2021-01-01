@@ -69,14 +69,6 @@ end
     @test DF.yeardecimal(Millisecond(123)) ≈ 123/1000/60/60/24/365.2425
 end
 
-@testset "from/to" begin
-    @test DF.datetime_from(MJD(59014.30417)) === DateTime(2020, 6, 14, 7, 18, 0, 288)
-    @test DF.datetime_from(MJD, 59014.30417) === DateTime(2020, 6, 14, 7, 18, 0, 288)
-    @test Date(DF.datetime_from(Year, 2019.416438357)) == Date(2019, 6, 2)
-    @test DF.datetime_to(MJD, DateTime(2020, 6, 14, 7, 18, 0, 288)) ≈ 59014.30417
-    @test DF.datetime_to(Year, Date(2019, 6, 2)) ≈ 2019.416438357
-end
-
 @testset "convert" begin
     @test convert(DateTime, YearDecimal(2019 + 0.5/365)) === DateTime(2019, 1, 1, 12)
     @test convert(YearDecimal, DateTime(2019, 1, 1, 12)) ≈ YearDecimal(2019 + 0.5/365)
