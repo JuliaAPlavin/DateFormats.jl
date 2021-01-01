@@ -33,8 +33,8 @@ datetime_from(::Type{Year}, x::Real) = yeardecimal(x)
 
 Base.convert(::Type{MJD}, x::DTM) = MJD(datetime2mjd(x))
 Base.convert(::Type{YearDecimal}, x::DTM) = YearDecimal(yeardecimal(x))
-Base.convert(T::Type{<:DTM}, x::MJD) = mjd2datetime(x.value)
-Base.convert(T::Type{<:DTM}, x::YearDecimal) = yeardecimal(x.value)
+Base.convert(::Type{DateTime}, x::MJD) = mjd2datetime(x.value)
+Base.convert(::Type{DateTime}, x::YearDecimal) = yeardecimal(x.value)
 
 
 mjd2datetime(mjd) = julian2datetime(2400000.5 + mjd)
