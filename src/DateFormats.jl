@@ -24,6 +24,8 @@ end
 const MYTYPES = Union{JD, MJD, YearDecimal}
 
 Base.isapprox(a::T, b::T; kwargs...) where {T <: MYTYPES} = isapprox(a.value, b.value; kwargs...)
+Base.isless(a::T, b::T) where {T <: MYTYPES} = isless(a.value, b.value)
+Base.isequal(a::T, b::T) where {T <: MYTYPES} = isequal(a.value, b.value)
 
 Base.convert(::Type{JD}, x::DTM) = JD(datetime2julian(x))
 Base.convert(::Type{MJD}, x::DTM) = MJD(datetime2mjd(x))

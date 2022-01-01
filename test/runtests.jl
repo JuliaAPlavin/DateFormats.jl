@@ -88,3 +88,11 @@ end
 
     @test convert(DateTime, MJD(missing)) === missing
 end
+
+@testset "ordering" begin
+    vals = rand(10)
+    @testset for T in [JD, MJD, YearDecimal]
+        xs = T.(vals)
+        @test map(x -> x.value, sort(xs)) == sort(vals)
+    end
+end
