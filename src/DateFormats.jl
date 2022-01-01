@@ -8,16 +8,19 @@ const DTM = Union{Date, DateTime}
 const DTPeriod = Union{TimePeriod, DatePeriod}
 const RealM = Union{Real, Missing}
 
+""" Datetime representation as a Julian day."""
 struct JulianDay{T <: RealM}
     value::T
 end
 const JD = JulianDay
 
+""" Datetime representation as a modified Julian day."""
 struct ModifiedJulianDay{T <: RealM}
     value::T
 end
 const MJD = ModifiedJulianDay
 
+""" Datetime representation as a decimal year number."""
 struct YearDecimal{T <: RealM}
     value::T
 end
@@ -28,11 +31,51 @@ Base.isapprox(a::T, b::T; kwargs...) where {T <: MYTYPES} = isapprox(a.value, b.
 Base.isless(a::T, b::T) where {T <: MYTYPES} = isless(a.value, b.value)
 Base.isequal(a::T, b::T) where {T <: MYTYPES} = isequal(a.value, b.value)
 
+""" Convert from a Date or DateTime.
+
+```jldoctest
+julia> JulianDay(Date(2020, 2, 3))
+JulianDay{Float64}(2.4588825e6)
+
+julia> JD(Date(2020, 2, 3))
+JulianDay{Float64}(2.4588825e6)
+```
+"""
 JD(x::Date) = JD(DateTime(x))
 JD(x::DateTime) = JD(datetime2julian(x))
+
+""" Convert from a Date or DateTime.
+
+```jldoctest
+julia> ModifiedJulianDay(Date(2020, 2, 3))
+ModifiedJulianDay{Float64}(58882.0)
+
+julia> MJD(Date(2020, 2, 3))
+ModifiedJulianDay{Float64}(58882.0)
+```
+"""
 MJD(x::Date) = MJD(DateTime(x))
 MJD(x::DateTime) = MJD(datetime2mjd(x))
+
+""" Convert from a Date or DateTime.
+
+```jldoctest
+julia> YearDecimal(Date(2020, 2, 3))
+YearDecimal{Float64}(2020.0901639344263)
+```
+"""
 YearDecimal(x::DTM) = YearDecimal(yeardecimal(x))
+
+""" Convert to DateTime.
+
+```jldoctest
+julia> DateTime(YearDecimal(2020.123))
+2020-02-15T00:25:55.200
+
+julia> DateTime(MJD(58882))
+2020-02-03T00:00:00
+```
+"""
 DateTime(x::JD) = julian2datetime(x.value)
 DateTime(x::MJD) = mjd2datetime(x.value)
 DateTime(x::YearDecimal) = yeardecimal(x.value)

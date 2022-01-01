@@ -4,6 +4,13 @@ using DateFormats
 const DF = DateFormats
 
 
+using Documenter, DocumenterMarkdown
+DocMeta.setdocmeta!(DateFormats, :DocTestSetup, :(using DateFormats; using Dates); recursive=true)
+makedocs(format=Markdown(), modules=[DateFormats], root="../docs")
+mv("../docs/build/README.md", "../README.md", force=true)
+rm("../docs/build", recursive=true)
+
+
 import Aqua
 import CompatHelperLocal
 @testset begin
