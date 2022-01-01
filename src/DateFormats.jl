@@ -5,7 +5,7 @@ using Dates
 export
     Date, DateTime, Dates,
     JulianDay, JD, ModifiedJulianDay, MJD, YearDecimal,
-    mjd, yeardecimal, period_decimal
+    mjd, modified_julian_day, julian_day, yeardecimal, period_decimal
 
 const DTM = Union{Date, DateTime}
 const DTPeriod = Union{TimePeriod, DatePeriod, Dates.CompoundPeriod}
@@ -87,8 +87,13 @@ DateTime(x::YearDecimal) = yeardecimal(x.value)
 Date(x::MYTYPES) = Date(DateTime(x))
 
 """ Convert from/to DateTime to/from modified julian days. """
-mjd(x::DTM) = MJD(x).value
-mjd(x::Real) = DateTime(MJD(x))
+modified_julian_day(x::DTM) = MJD(x).value
+modified_julian_day(x::Real) = DateTime(MJD(x))
+const mjd = modified_julian_day
+
+""" Convert from/to DateTime to/from julian days. """
+julian_day(x::DTM) = JD(x).value
+julian_day(x::Real) = DateTime(JD(x))
 
 Base.convert(T::Type{<:MYTYPES}, x::DTM) = T(x)
 Base.convert(T::Type{<:DTM}, x::MYTYPES) = T(x)
