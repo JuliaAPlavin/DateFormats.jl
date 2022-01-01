@@ -2,7 +2,9 @@ module DateFormats
 
 using Dates
 
-export JulianDay, JD, ModifiedJulianDay, MJD, YearDecimal
+export
+    Date, DateTime, Dates,
+    JulianDay, JD, ModifiedJulianDay, MJD, YearDecimal
 
 const DTM = Union{Date, DateTime}
 const DTPeriod = Union{TimePeriod, DatePeriod}
