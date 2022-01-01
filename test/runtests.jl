@@ -19,8 +19,10 @@ end
 @testset "unix" begin
     @test unix_time(1.5920928e9) === DateTime(2020, 6, 14)
     @test unix_time(1.592119080288e9) === DateTime(2020, 6, 14, 7, 18, 0, 288)
+    @test unix_time(Millisecond, 1.592119080288e12) === DateTime(2020, 6, 14, 7, 18, 0, 288)
     @test unix_time(DateTime(2020, 6, 14)) === 1.5920928e9
     @test unix_time(DateTime(2020, 6, 14, 7, 18, 0, 288)) ≈ 1.592119080288e9
+    @test unix_time(Millisecond, DateTime(2020, 6, 14, 7, 18, 0, 288)) ≈ 1.592119080288e12
 end
 
 @testset "yeardecimal datetime" begin
