@@ -62,6 +62,9 @@ end
     @test DF.period_decimal(Millisecond, Millisecond(123)) ≈ 123
     @test DF.period_decimal(Day, Second(456)) ≈ 0.00527777777
     @test DF.period_decimal(Second, Day(78)) ≈ 6.7392e6
+    
+    @test DF.period_decimal(Second, Millisecond(12) + Hour(34)) ≈ 122400.012
+    @test DF.period_decimal(Second, Millisecond(12) + Hour(34) + Year(1)) ≈ 3.1679352012e7
 end
 
 @testset "convert" begin

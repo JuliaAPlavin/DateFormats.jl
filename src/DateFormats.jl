@@ -7,7 +7,7 @@ export
     JulianDay, JD, ModifiedJulianDay, MJD, YearDecimal
 
 const DTM = Union{Date, DateTime}
-const DTPeriod = Union{TimePeriod, DatePeriod}
+const DTPeriod = Union{TimePeriod, DatePeriod, Dates.CompoundPeriod}
 const RealM = Union{Real, Missing}
 
 """ Datetime representation as a Julian day."""
