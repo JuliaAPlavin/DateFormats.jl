@@ -33,9 +33,10 @@ YearDecimal(x::DTM) = YearDecimal(yeardecimal(x))
 DateTime(x::JD) = julian2datetime(x.value)
 DateTime(x::MJD) = mjd2datetime(x.value)
 DateTime(x::YearDecimal) = yeardecimal(x.value)
+Date(x::MYTYPES) = Date(DateTime(x))
 
 Base.convert(T::Type{<:MYTYPES}, x::DTM) = T(x)
-Base.convert(::Type{DateTime}, x::MYTYPES) = DateTime(x)
+Base.convert(T::Type{<:DTM}, x::MYTYPES) = T(x)
 
 
 mjd2datetime(mjd) = julian2datetime(2400000.5 + mjd)
