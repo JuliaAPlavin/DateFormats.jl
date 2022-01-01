@@ -7,18 +7,18 @@ export JulianDay, JD, ModifiedJulianDay, MJD, YearDecimal
 const DTM = Union{Date, DateTime}
 const DTPeriod = Union{TimePeriod, DatePeriod}
 
-struct JulianDay
-    value::Union{Float64, Missing}
+struct JulianDay{T}
+    value::T
 end
 const JD = JulianDay
 
-struct ModifiedJulianDay
-    value::Union{Float64, Missing}
+struct ModifiedJulianDay{T}
+    value::T
 end
 const MJD = ModifiedJulianDay
 
-struct YearDecimal
-    value::Union{Float64, Missing}
+struct YearDecimal{T}
+    value::T
 end
 
 const MYTYPES = Union{JD, MJD, YearDecimal}
