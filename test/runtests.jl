@@ -4,14 +4,23 @@ using DateFormats
 const DF = DateFormats
 
 
-@testset "mjd" begin
-    @test DF.mjd2datetime(59014) === DateTime(2020, 6, 14)  # ensure it's not a Date
-    @test DF.mjd2datetime(59014.30417) === DateTime(2020, 6, 14, 7, 18, 0, 288)
-    @test DF.datetime2mjd(DateTime(2020, 6, 14)) === 59014.0  # float
-    @test DF.datetime2mjd(DateTime(2020, 6, 14, 7, 18, 0, 288)) ≈ 59014.30417
+@testset "jd" begin
+    @test modified_julian_day(59014) === DateTime(2020, 6, 14)  # ensure it's not a Date
+    @test modified_julian_day(59014.30417) === DateTime(2020, 6, 14, 7, 18, 0, 288)
+    @test modified_julian_day(DateTime(2020, 6, 14)) === 59014.0  # float
+    @test modified_julian_day(DateTime(2020, 6, 14, 7, 18, 0, 288)) ≈ 59014.30417
 
-    @test DF.mjd2datetime(missing) === missing
-    @test DF.datetime2mjd(missing) === missing
+    @test julian_day(2459014.5) === DateTime(2020, 6, 14)
+    @test julian_day(2459014.30417) === DateTime(2020, 6, 13, 19, 18, 0, 288)
+    @test julian_day(DateTime(2020, 6, 14)) === 2.4590145e6
+    @test julian_day(DateTime(2020, 6, 14, 7, 18, 0, 288)) ≈ 2.45901480417e6
+end
+
+@testset "unix" begin
+    @test unix_time(1.5920928e9) === DateTime(2020, 6, 14)
+    @test unix_time(1.592119080288e9) === DateTime(2020, 6, 14, 7, 18, 0, 288)
+    @test unix_time(DateTime(2020, 6, 14)) === 1.5920928e9
+    @test unix_time(DateTime(2020, 6, 14, 7, 18, 0, 288)) ≈ 1.592119080288e9
 end
 
 @testset "yeardecimal datetime" begin
@@ -26,47 +35,64 @@ end
     @test DF.yearfrac(DateTime(2019, 12, 31)) ≈ 1 - 1/365
     @test DF.yearfrac(DateTime(2019, 1, 1, 12, 30)) ≈ (12.5/24)/365
 
-    @test DF.yeardecimal(Date(2019, 1, 1)) ≈ 2019
-    @test DF.yeardecimal(Date(2019, 12, 31)) ≈ 2020 - 1/365
-    @test DF.yeardecimal(Date(2020, 1, 1)) ≈ 2020
-    @test DF.yeardecimal(Date(2020, 12, 31)) ≈ 2021 - 1/366
-    @test DF.yeardecimal(Date(2019, 6, 2)) ≈ 2019 + 0.416438356
-    @test DF.yeardecimal(Date(2020, 6, 2)) ≈ 2020 + 0.418032787
+    @test yeardecimal(Date(2019, 1, 1)) ≈ 2019
+    @test yeardecimal(Date(2019, 12, 31)) ≈ 2020 - 1/365
+    @test yeardecimal(Date(2020, 1, 1)) ≈ 2020
+    @test yeardecimal(Date(2020, 12, 31)) ≈ 2021 - 1/366
+    @test yeardecimal(Date(2019, 6, 2)) ≈ 2019 + 0.416438356
+    @test yeardecimal(Date(2020, 6, 2)) ≈ 2020 + 0.418032787
 
-    @test DF.yeardecimal(DateTime(2019, 1, 1)) ≈ 2019
-    @test DF.yeardecimal(DateTime(2019, 12, 31)) ≈ 2020 - 1/365
-    @test DF.yeardecimal(DateTime(2019, 1, 1, 12, 30)) ≈ 2019 + (12.5/24)/365
+    @test yeardecimal(DateTime(2019, 1, 1)) ≈ 2019
+    @test yeardecimal(DateTime(2019, 12, 31)) ≈ 2020 - 1/365
+    @test yeardecimal(DateTime(2019, 1, 1, 12, 30)) ≈ 2019 + (12.5/24)/365
 
-    @test DF.yeardecimal(2019) === DateTime(2019, 1, 1)
-    @test DF.yeardecimal(2019 + 0.5/365) === DateTime(2019, 1, 1, 12)
-    @test DF.yeardecimal(2019 + 1/365) === DateTime(2019, 1, 2)
+    @test yeardecimal(2019) === DateTime(2019, 1, 1)
+    @test yeardecimal(2019 + 0.5/365) === DateTime(2019, 1, 1, 12)
+    @test yeardecimal(2019 + 1/365) === DateTime(2019, 1, 2)
 
-    @test DF.yeardecimal(Date(DF.yeardecimal(2019))) == 2019
-    @test DF.yeardecimal(Date(DF.yeardecimal(2020 - 1/365 + 1e-5))) ≈ 2020 - 1/365
+    @test yeardecimal(Date(yeardecimal(2019))) == 2019
+    @test yeardecimal(Date(yeardecimal(2020 - 1/365 + 1e-5))) ≈ 2020 - 1/365
 
     @testset for v in [2019, 2019.123, 2019.0001, 2019.9999]
-        @test DF.yeardecimal(DF.yeardecimal(v)) ≈ v
+        @test yeardecimal(yeardecimal(v)) ≈ v
     end
     @testset for v in [DateTime(2019, 1, 1, 0, 0, 0, 0), DateTime(2019, 1, 1, 0, 0, 0, 1), DateTime(2019, 12, 31, 23, 59, 59, 999)]
-        @test DF.yeardecimal(DF.yeardecimal(v)) == v
+        @test yeardecimal(yeardecimal(v)) == v
+    end
+end
+
+@testset "missing" begin
+    @testset for f in [julian_day, modified_julian_day, yeardecimal, unix_time, x->period_decimal(Second, x)]
+        @test f(missing) === missing
+    end
+end
+
+@testset "inverse" begin
+    @testset for f in [julian_day, modified_julian_day, yeardecimal, unix_time]
+        x = DateTime(2020, 2, 3)
+        @test f(f(x)) === x
+        x = DateTime(2020, 2, 3, 4, 5, 6)
+        @test f(f(x)) === x
+        x = Date(2020, 2, 3)
+        @test f(f(x)) === DateTime(x)
     end
 end
 
 @testset "decimal period" begin
-    @test DF.yeardecimal(Year(1)) == 1
-    @test DF.yeardecimal(Year(123)) == 123
-    @test DF.yeardecimal(Month(1)) ≈ 1/12
-    @test DF.yeardecimal(Day(3)) ≈ 3/365.2425
-    @test DF.yeardecimal(Millisecond(123)) ≈ 123/1000/60/60/24/365.2425
+    @test yeardecimal(Year(1)) == 1
+    @test yeardecimal(Year(123)) == 123
+    @test yeardecimal(Month(1)) ≈ 1/12
+    @test yeardecimal(Day(3)) ≈ 3/365.2425
+    @test yeardecimal(Millisecond(123)) ≈ 123/1000/60/60/24/365.2425
 
-    @test DF.period_decimal(Millisecond, Millisecond(123)) ≈ 123
-    @test DF.period_decimal(Day, Second(456)) ≈ 0.00527777777
-    @test DF.period_decimal(Second, Day(78)) ≈ 6.7392e6
+    @test period_decimal(Millisecond, Millisecond(123)) ≈ 123
+    @test period_decimal(Day, Second(456)) ≈ 0.00527777777
+    @test period_decimal(Second, Day(78)) ≈ 6.7392e6
     
-    @test DF.period_decimal(Second, Millisecond(12) + Hour(34)) ≈ 122400.012
-    @test DF.period_decimal(Second, Millisecond(12) + Hour(34) + Year(1)) ≈ 3.1679352012e7
-    @test DF.period_decimal(Second(1), Millisecond(12) + Hour(34) + Year(1)) ≈ 3.1679352012e7
-    @test DF.period_decimal(Second(5), Millisecond(12) + Hour(34) + Year(1)) ≈ 3.1679352012e7 / 5
+    @test period_decimal(Second, Millisecond(12) + Hour(34)) ≈ 122400.012
+    @test period_decimal(Second, Millisecond(12) + Hour(34) + Year(1)) ≈ 3.1679352012e7
+    @test period_decimal(Second(1), Millisecond(12) + Hour(34) + Year(1)) ≈ 3.1679352012e7
+    @test period_decimal(Second(5), Millisecond(12) + Hour(34) + Year(1)) ≈ 3.1679352012e7 / 5
 end
 
 @testset "convert" begin
@@ -103,10 +129,9 @@ end
 end
 
 @testset "from string" begin
-    @test YearDecimal("2019.123") === YearDecimal(2019.123)
-    @test_broken YearDecimal{Float64}("2019.123") === YearDecimal(2019.123)
-    @test MJD("53318.30955") === MJD(53318.30955)
-    @test JD("53318.30955") === JD(53318.30955)
+    @test yeardecimal("2019.123") === yeardecimal(2019.123)
+    @test mjd("53318.30955") === mjd(53318.30955)
+    @test julian_day("53318.30955") === julian_day(53318.30955)
 end
 
 @testset "ordering" begin
