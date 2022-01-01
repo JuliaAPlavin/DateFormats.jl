@@ -85,4 +85,6 @@ end
 
     @test convert(DateTime, JD(2459014.80417)) === DateTime(2020, 6, 14, 7, 18, 0, 288)
     @test convert(JD, DateTime(2020, 6, 14, 7, 18, 0, 288)) ≈ JD(2459014.80417)
+
+    @test convert(DateTime, MJD(missing)) === missing
 end

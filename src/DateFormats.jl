@@ -8,17 +8,17 @@ const DTM = Union{Date, DateTime}
 const DTPeriod = Union{TimePeriod, DatePeriod}
 
 struct JulianDay
-    value::Float64
+    value::Union{Float64, Missing}
 end
 const JD = JulianDay
 
 struct ModifiedJulianDay
-    value::Float64
+    value::Union{Float64, Missing}
 end
 const MJD = ModifiedJulianDay
 
 struct YearDecimal
-    value::Float64
+    value::Union{Float64, Missing}
 end
 
 const MYTYPES = Union{JD, MJD, YearDecimal}
