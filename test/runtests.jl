@@ -65,6 +65,8 @@ end
     
     @test DF.period_decimal(Second, Millisecond(12) + Hour(34)) ≈ 122400.012
     @test DF.period_decimal(Second, Millisecond(12) + Hour(34) + Year(1)) ≈ 3.1679352012e7
+    @test DF.period_decimal(Second(1), Millisecond(12) + Hour(34) + Year(1)) ≈ 3.1679352012e7
+    @test DF.period_decimal(Second(5), Millisecond(12) + Hour(34) + Year(1)) ≈ 3.1679352012e7 / 5
 end
 
 @testset "convert" begin

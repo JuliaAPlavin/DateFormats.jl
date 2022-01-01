@@ -4,7 +4,8 @@ using Dates
 
 export
     Date, DateTime, Dates,
-    JulianDay, JD, ModifiedJulianDay, MJD, YearDecimal
+    JulianDay, JD, ModifiedJulianDay, MJD, YearDecimal,
+    mjd, yeardecimal, period_decimal
 
 const DTM = Union{Date, DateTime}
 const DTPeriod = Union{TimePeriod, DatePeriod, Dates.CompoundPeriod}
@@ -85,6 +86,10 @@ DateTime(x::MJD) = mjd2datetime(x.value)
 DateTime(x::YearDecimal) = yeardecimal(x.value)
 Date(x::MYTYPES) = Date(DateTime(x))
 
+""" Convert from/to DateTime to/from modified julian days. """
+mjd(x::DTM) = MJD(x).value
+mjd(x::Real) = DateTime(MJD(x))
+
 Base.convert(T::Type{<:MYTYPES}, x::DTM) = T(x)
 Base.convert(T::Type{<:DTM}, x::MYTYPES) = T(x)
 
@@ -97,6 +102,8 @@ Dates.datetime2julian(::Missing) = missing
 
 
 yearfrac(dtm::T) where {T <: DTM} = (dtm - T(year(dtm))) / (T(year(dtm) + 1) - T(year(dtm)))
+
+""" Convert from/to DateTime to/from a decimal year number. """
 yeardecimal(dtm::DTM) = year(dtm) + yearfrac(dtm)
 
 function yeardecimal(years::Real)
@@ -106,8 +113,12 @@ function yeardecimal(years::Real)
     return DateTime(years_whole) + Millisecond(round(Int64, period_ms))
 end
 
-period_decimal(T::Type{<:DTPeriod}, t::DTPeriod) = Dates.tons(t) / Dates.tons(T(1))
+""" Represent `t` as a decimal number of `P` periods.
+
+`P` can be a type like `Day`, or a value like `Day(5)`. """
+period_decimal(P::Type{<:DTPeriod}, t::DTPeriod) = Dates.tons(t) / Dates.tons(P(1))
 period_decimal(p::DTPeriod, t::DTPeriod) = Dates.tons(t) / Dates.tons(p)
+
 yeardecimal(t::DTPeriod) = period_decimal(Year, t)
 
 
