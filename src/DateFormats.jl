@@ -1,6 +1,10 @@
 module DateFormats
 
 using Dates
+using DocStringExtensions
+@template (FUNCTIONS, METHODS, MACROS) = """$(TYPEDSIGNATURES)\n$(DOCSTRING)"""
+@template TYPES = """$(TYPEDEF)\n$(TYPEDFIELDS)\n$(DOCSTRING)"""
+
 
 export
     Date, DateTime, Dates,
