@@ -27,12 +27,15 @@ Base.isapprox(a::T, b::T; kwargs...) where {T <: MYTYPES} = isapprox(a.value, b.
 Base.isless(a::T, b::T) where {T <: MYTYPES} = isless(a.value, b.value)
 Base.isequal(a::T, b::T) where {T <: MYTYPES} = isequal(a.value, b.value)
 
-Base.convert(::Type{JD}, x::DTM) = JD(datetime2julian(x))
-Base.convert(::Type{MJD}, x::DTM) = MJD(datetime2mjd(x))
-Base.convert(::Type{YearDecimal}, x::DTM) = YearDecimal(yeardecimal(x))
-Base.convert(::Type{DateTime}, x::JD) = julian2datetime(x.value)
-Base.convert(::Type{DateTime}, x::MJD) = mjd2datetime(x.value)
-Base.convert(::Type{DateTime}, x::YearDecimal) = yeardecimal(x.value)
+JD(x::DateTime) = JD(datetime2julian(x))
+MJD(x::DateTime) = MJD(datetime2mjd(x))
+YearDecimal(x::DTM) = YearDecimal(yeardecimal(x))
+DateTime(x::JD) = julian2datetime(x.value)
+DateTime(x::MJD) = mjd2datetime(x.value)
+DateTime(x::YearDecimal) = yeardecimal(x.value)
+
+Base.convert(T::Type{<:MYTYPES}, x::DTM) = T(x)
+Base.convert(::Type{DateTime}, x::MYTYPES) = DateTime(x)
 
 
 mjd2datetime(mjd) = julian2datetime(2400000.5 + mjd)

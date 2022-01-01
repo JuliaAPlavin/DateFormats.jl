@@ -89,6 +89,17 @@ end
     @test convert(DateTime, MJD(missing)) === missing
 end
 
+@testset "constructor" begin
+    x = rand() * 5e3
+    @test DateTime(YearDecimal(x)) == convert(DateTime, YearDecimal(x))
+    @test DateTime(JD(x)) == convert(DateTime, JD(x))
+    @test DateTime(MJD(x)) == convert(DateTime, MJD(x))
+    y = DateTime(YearDecimal(x))
+    @test YearDecimal(y) == convert(YearDecimal, y)
+    @test JD(y) == convert(JD, y)
+    @test MJD(y) == convert(MJD, y)
+end
+
 @testset "ordering" begin
     vals = rand(10)
     @testset for T in [JD, MJD, YearDecimal]
