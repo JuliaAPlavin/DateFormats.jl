@@ -82,9 +82,11 @@ end
 
     @test convert(DateTime, MJD(59014.30417)) === DateTime(2020, 6, 14, 7, 18, 0, 288)
     @test convert(MJD, DateTime(2020, 6, 14, 7, 18, 0, 288)) ≈ MJD(59014.30417)
+    @test convert(MJD, Date(2020, 6, 14)) ≈ MJD(59014.)
 
     @test convert(DateTime, JD(2459014.80417)) === DateTime(2020, 6, 14, 7, 18, 0, 288)
     @test convert(JD, DateTime(2020, 6, 14, 7, 18, 0, 288)) ≈ JD(2459014.80417)
+    @test convert(JD, Date(2020, 6, 14)) ≈ JD(2459014.5)
 
     @test convert(DateTime, MJD(missing)) === missing
 end
@@ -97,6 +99,12 @@ end
     y = DateTime(YearDecimal(x))
     @test YearDecimal(y) == convert(YearDecimal, y)
     @test JD(y) == convert(JD, y)
+    @test JulianDay(y) == convert(JD, y)
+    @test MJD(y) == convert(MJD, y)
+    y = Date(YearDecimal(x))
+    @test YearDecimal(y) == convert(YearDecimal, y)
+    @test JD(y) == convert(JD, y)
+    @test JulianDay(y) == convert(JD, y)
     @test MJD(y) == convert(MJD, y)
 end
 

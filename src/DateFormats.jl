@@ -6,18 +6,19 @@ export JulianDay, JD, ModifiedJulianDay, MJD, YearDecimal
 
 const DTM = Union{Date, DateTime}
 const DTPeriod = Union{TimePeriod, DatePeriod}
+const RealM = Union{Real, Missing}
 
-struct JulianDay{T}
+struct JulianDay{T <: RealM}
     value::T
 end
 const JD = JulianDay
 
-struct ModifiedJulianDay{T}
+struct ModifiedJulianDay{T <: RealM}
     value::T
 end
 const MJD = ModifiedJulianDay
 
-struct YearDecimal{T}
+struct YearDecimal{T <: RealM}
     value::T
 end
 
@@ -27,7 +28,9 @@ Base.isapprox(a::T, b::T; kwargs...) where {T <: MYTYPES} = isapprox(a.value, b.
 Base.isless(a::T, b::T) where {T <: MYTYPES} = isless(a.value, b.value)
 Base.isequal(a::T, b::T) where {T <: MYTYPES} = isequal(a.value, b.value)
 
+JD(x::Date) = JD(DateTime(x))
 JD(x::DateTime) = JD(datetime2julian(x))
+MJD(x::Date) = MJD(DateTime(x))
 MJD(x::DateTime) = MJD(datetime2mjd(x))
 YearDecimal(x::DTM) = YearDecimal(yeardecimal(x))
 DateTime(x::JD) = julian2datetime(x.value)
