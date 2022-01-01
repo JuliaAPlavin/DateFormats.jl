@@ -132,6 +132,9 @@ function yeardecimal(years::Real)
     return DateTime(years_whole) + Millisecond(round(Int64, period_ms))
 end
 
+""" Create a time period `t * P` rounded to a nanosecond. """
+period_decimal(P::Type{<:DTPeriod}, t::Real) = Nanosecond(round(Int, t * Dates.tons(P(1))))
+
 """ Represent `t` as a decimal number of `P` periods.
 
 `P` can be a type like `Day`, or a value like `Day(5)`. """

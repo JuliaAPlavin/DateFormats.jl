@@ -93,6 +93,12 @@ end
     @test period_decimal(Second, Millisecond(12) + Hour(34) + Year(1)) ≈ 3.1679352012e7
     @test period_decimal(Second(1), Millisecond(12) + Hour(34) + Year(1)) ≈ 3.1679352012e7
     @test period_decimal(Second(5), Millisecond(12) + Hour(34) + Year(1)) ≈ 3.1679352012e7 / 5
+    
+    @test period_decimal(Second, 123)::Nanosecond == Second(123)
+    @test period_decimal(Second, 123.456)::Nanosecond == Millisecond(123456)
+    @test period_decimal(Second, 123.456789)::Nanosecond == Microsecond(123456789)
+    @test period_decimal(Second, 123.45678912345)::Nanosecond == Nanosecond(123456789123)
+    @test period_decimal(Day, 123.45678912345)::Nanosecond == Nanosecond(10666666580266080)
 end
 
 @testset "convert" begin
