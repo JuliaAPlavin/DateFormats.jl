@@ -82,7 +82,7 @@ julian_day(_::Missing) -> Missing
 Convert from/to DateTime to/from julian days. 
 
 
-<a target='_blank' href='https://github.com/aplavin/DateFormats.jl/blob/45e395923627c6429dcd97414d0fa57c38f563e1/src/DateFormats.jl#L106' class='documenter-source'>source</a><br>
+<a target='_blank' href='https://github.com/aplavin/DateFormats.jl/blob/bb3f54c540c13253e92bf1e4ba6daf8c575e2820/src/DateFormats.jl#L106' class='documenter-source'>source</a><br>
 
 <a id='DateFormats.modified_julian_day-Tuple{Missing}' href='#DateFormats.modified_julian_day-Tuple{Missing}'>#</a>
 **`DateFormats.modified_julian_day`** &mdash; *Method*.
@@ -97,15 +97,30 @@ modified_julian_day(_::Missing) -> Missing
 Convert from/to DateTime to/from modified julian days. 
 
 
-<a target='_blank' href='https://github.com/aplavin/DateFormats.jl/blob/45e395923627c6429dcd97414d0fa57c38f563e1/src/DateFormats.jl#L99' class='documenter-source'>source</a><br>
+<a target='_blank' href='https://github.com/aplavin/DateFormats.jl/blob/bb3f54c540c13253e92bf1e4ba6daf8c575e2820/src/DateFormats.jl#L99' class='documenter-source'>source</a><br>
 
-<a id='DateFormats.period_decimal-Tuple{Type{var"#s1"} where var"#s1"<:Union{Dates.CompoundPeriod, DatePeriod, TimePeriod}, Union{Dates.CompoundPeriod, DatePeriod, TimePeriod}}' href='#DateFormats.period_decimal-Tuple{Type{var"#s1"} where var"#s1"<:Union{Dates.CompoundPeriod, DatePeriod, TimePeriod}, Union{Dates.CompoundPeriod, DatePeriod, TimePeriod}}'>#</a>
+<a id='DateFormats.period_decimal-Tuple{Type{<:Union{Dates.CompoundPeriod, DatePeriod, TimePeriod}}, Real}' href='#DateFormats.period_decimal-Tuple{Type{<:Union{Dates.CompoundPeriod, DatePeriod, TimePeriod}}, Real}'>#</a>
 **`DateFormats.period_decimal`** &mdash; *Method*.
 
 
 
 ```julia
-period_decimal(P::Type{var"#s1"} where var"#s1"<:Union{Dates.CompoundPeriod, DatePeriod, TimePeriod}, t::Union{Dates.CompoundPeriod, DatePeriod, TimePeriod}) -> Any
+period_decimal(P::Type{<:Union{Dates.CompoundPeriod, DatePeriod, TimePeriod}}, t::Real) -> Any
+
+```
+
+Create a time period `t * P` rounded to a nanosecond. 
+
+
+<a target='_blank' href='https://github.com/aplavin/DateFormats.jl/blob/bb3f54c540c13253e92bf1e4ba6daf8c575e2820/src/DateFormats.jl#L139' class='documenter-source'>source</a><br>
+
+<a id='DateFormats.period_decimal-Tuple{Type{<:Union{Dates.CompoundPeriod, DatePeriod, TimePeriod}}, Union{Dates.CompoundPeriod, DatePeriod, TimePeriod}}' href='#DateFormats.period_decimal-Tuple{Type{<:Union{Dates.CompoundPeriod, DatePeriod, TimePeriod}}, Union{Dates.CompoundPeriod, DatePeriod, TimePeriod}}'>#</a>
+**`DateFormats.period_decimal`** &mdash; *Method*.
+
+
+
+```julia
+period_decimal(P::Type{<:Union{Dates.CompoundPeriod, DatePeriod, TimePeriod}}, t::Union{Dates.CompoundPeriod, DatePeriod, TimePeriod}) -> Any
 
 ```
 
@@ -114,22 +129,7 @@ Represent `t` as a decimal number of `P` periods.
 `P` can be a type like `Day`, or a value like `Day(5)`. 
 
 
-<a target='_blank' href='https://github.com/aplavin/DateFormats.jl/blob/45e395923627c6429dcd97414d0fa57c38f563e1/src/DateFormats.jl#L142' class='documenter-source'>source</a><br>
-
-<a id='DateFormats.period_decimal-Tuple{Type{var"#s6"} where var"#s6"<:Union{Dates.CompoundPeriod, DatePeriod, TimePeriod}, Real}' href='#DateFormats.period_decimal-Tuple{Type{var"#s6"} where var"#s6"<:Union{Dates.CompoundPeriod, DatePeriod, TimePeriod}, Real}'>#</a>
-**`DateFormats.period_decimal`** &mdash; *Method*.
-
-
-
-```julia
-period_decimal(P::Type{var"#s6"} where var"#s6"<:Union{Dates.CompoundPeriod, DatePeriod, TimePeriod}, t::Real) -> Any
-
-```
-
-Create a time period `t * P` rounded to a nanosecond. 
-
-
-<a target='_blank' href='https://github.com/aplavin/DateFormats.jl/blob/45e395923627c6429dcd97414d0fa57c38f563e1/src/DateFormats.jl#L139' class='documenter-source'>source</a><br>
+<a target='_blank' href='https://github.com/aplavin/DateFormats.jl/blob/bb3f54c540c13253e92bf1e4ba6daf8c575e2820/src/DateFormats.jl#L142' class='documenter-source'>source</a><br>
 
 <a id='DateFormats.unix_time-Tuple{Any}' href='#DateFormats.unix_time-Tuple{Any}'>#</a>
 **`DateFormats.unix_time`** &mdash; *Method*.
@@ -144,7 +144,7 @@ unix_time(x) -> Any
 Convert from/to DateTime to/from julian days. 
 
 
-<a target='_blank' href='https://github.com/aplavin/DateFormats.jl/blob/45e395923627c6429dcd97414d0fa57c38f563e1/src/DateFormats.jl#L113' class='documenter-source'>source</a><br>
+<a target='_blank' href='https://github.com/aplavin/DateFormats.jl/blob/bb3f54c540c13253e92bf1e4ba6daf8c575e2820/src/DateFormats.jl#L113' class='documenter-source'>source</a><br>
 
 <a id='DateFormats.yeardecimal-Tuple{Union{Date, DateTime}}' href='#DateFormats.yeardecimal-Tuple{Union{Date, DateTime}}'>#</a>
 **`DateFormats.yeardecimal`** &mdash; *Method*.
@@ -159,7 +159,7 @@ yeardecimal(dtm::Union{Date, DateTime}) -> Float64
 Convert from/to DateTime to/from a decimal year number. 
 
 
-<a target='_blank' href='https://github.com/aplavin/DateFormats.jl/blob/45e395923627c6429dcd97414d0fa57c38f563e1/src/DateFormats.jl#L126' class='documenter-source'>source</a><br>
+<a target='_blank' href='https://github.com/aplavin/DateFormats.jl/blob/bb3f54c540c13253e92bf1e4ba6daf8c575e2820/src/DateFormats.jl#L126' class='documenter-source'>source</a><br>
 
 <a id='DateFormats.JD-Tuple{Union{Date, DateTime}}' href='#DateFormats.JD-Tuple{Union{Date, DateTime}}'>#</a>
 **`DateFormats.JD`** &mdash; *Method*.
@@ -177,7 +177,7 @@ JulianDay{Float64}(2.4588825e6)
 ```
 
 
-<a target='_blank' href='https://github.com/aplavin/DateFormats.jl/blob/45e395923627c6429dcd97414d0fa57c38f563e1/src/DateFormats.jl#L45' class='documenter-source'>source</a><br>
+<a target='_blank' href='https://github.com/aplavin/DateFormats.jl/blob/bb3f54c540c13253e92bf1e4ba6daf8c575e2820/src/DateFormats.jl#L45' class='documenter-source'>source</a><br>
 
 <a id='DateFormats.JulianDay' href='#DateFormats.JulianDay'>#</a>
 **`DateFormats.JulianDay`** &mdash; *Type*.
@@ -187,7 +187,7 @@ JulianDay{Float64}(2.4588825e6)
 Datetime representation as a Julian day.
 
 
-<a target='_blank' href='https://github.com/aplavin/DateFormats.jl/blob/45e395923627c6429dcd97414d0fa57c38f563e1/src/DateFormats.jl#L18' class='documenter-source'>source</a><br>
+<a target='_blank' href='https://github.com/aplavin/DateFormats.jl/blob/bb3f54c540c13253e92bf1e4ba6daf8c575e2820/src/DateFormats.jl#L18' class='documenter-source'>source</a><br>
 
 <a id='DateFormats.MJD-Tuple{Union{Date, DateTime}}' href='#DateFormats.MJD-Tuple{Union{Date, DateTime}}'>#</a>
 **`DateFormats.MJD`** &mdash; *Method*.
@@ -205,7 +205,7 @@ ModifiedJulianDay{Float64}(58882.0)
 ```
 
 
-<a target='_blank' href='https://github.com/aplavin/DateFormats.jl/blob/45e395923627c6429dcd97414d0fa57c38f563e1/src/DateFormats.jl#L57' class='documenter-source'>source</a><br>
+<a target='_blank' href='https://github.com/aplavin/DateFormats.jl/blob/bb3f54c540c13253e92bf1e4ba6daf8c575e2820/src/DateFormats.jl#L57' class='documenter-source'>source</a><br>
 
 <a id='DateFormats.ModifiedJulianDay' href='#DateFormats.ModifiedJulianDay'>#</a>
 **`DateFormats.ModifiedJulianDay`** &mdash; *Type*.
@@ -215,7 +215,7 @@ ModifiedJulianDay{Float64}(58882.0)
 Datetime representation as a modified Julian day.
 
 
-<a target='_blank' href='https://github.com/aplavin/DateFormats.jl/blob/45e395923627c6429dcd97414d0fa57c38f563e1/src/DateFormats.jl#L24' class='documenter-source'>source</a><br>
+<a target='_blank' href='https://github.com/aplavin/DateFormats.jl/blob/bb3f54c540c13253e92bf1e4ba6daf8c575e2820/src/DateFormats.jl#L24' class='documenter-source'>source</a><br>
 
 <a id='DateFormats.YearDecimal' href='#DateFormats.YearDecimal'>#</a>
 **`DateFormats.YearDecimal`** &mdash; *Type*.
@@ -225,7 +225,7 @@ Datetime representation as a modified Julian day.
 Datetime representation as a decimal year number.
 
 
-<a target='_blank' href='https://github.com/aplavin/DateFormats.jl/blob/45e395923627c6429dcd97414d0fa57c38f563e1/src/DateFormats.jl#L30' class='documenter-source'>source</a><br>
+<a target='_blank' href='https://github.com/aplavin/DateFormats.jl/blob/bb3f54c540c13253e92bf1e4ba6daf8c575e2820/src/DateFormats.jl#L30' class='documenter-source'>source</a><br>
 
 <a id='DateFormats.YearDecimal-Tuple{Union{Date, DateTime}}' href='#DateFormats.YearDecimal-Tuple{Union{Date, DateTime}}'>#</a>
 **`DateFormats.YearDecimal`** &mdash; *Method*.
@@ -240,7 +240,7 @@ YearDecimal{Float64}(2020.0901639344263)
 ```
 
 
-<a target='_blank' href='https://github.com/aplavin/DateFormats.jl/blob/45e395923627c6429dcd97414d0fa57c38f563e1/src/DateFormats.jl#L69' class='documenter-source'>source</a><br>
+<a target='_blank' href='https://github.com/aplavin/DateFormats.jl/blob/bb3f54c540c13253e92bf1e4ba6daf8c575e2820/src/DateFormats.jl#L69' class='documenter-source'>source</a><br>
 
 <a id='Dates.DateTime-Tuple{JulianDay}' href='#Dates.DateTime-Tuple{JulianDay}'>#</a>
 **`Dates.DateTime`** &mdash; *Method*.
@@ -263,5 +263,5 @@ julia> DateTime(MJD(58882))
 ```
 
 
-<a target='_blank' href='https://github.com/aplavin/DateFormats.jl/blob/45e395923627c6429dcd97414d0fa57c38f563e1/src/DateFormats.jl#L80' class='documenter-source'>source</a><br>
+<a target='_blank' href='https://github.com/aplavin/DateFormats.jl/blob/bb3f54c540c13253e92bf1e4ba6daf8c575e2820/src/DateFormats.jl#L80' class='documenter-source'>source</a><br>
 
