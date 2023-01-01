@@ -1,5 +1,6 @@
 using Test
 using Dates
+using InverseFunctions
 using DateFormats
 const DF = DateFormats
 
@@ -73,10 +74,15 @@ end
     @testset for f in [julian_day, modified_julian_day, yeardecimal, unix_time]
         x = DateTime(2020, 2, 3)
         @test f(f(x)) === x
+        InverseFunctions.test_inverse(f, x; compare=isequal)
+
         x = DateTime(2020, 2, 3, 4, 5, 6)
         @test f(f(x)) === x
+        InverseFunctions.test_inverse(f, x; compare=isequal)
+
         x = Date(2020, 2, 3)
         @test f(f(x)) === DateTime(x)
+        InverseFunctions.test_inverse(f, x; compare=isequal)
     end
 end
 
@@ -101,6 +107,9 @@ end
     @test period_decimal(Second, 123.456789)::Nanosecond == Microsecond(123456789)
     @test period_decimal(Second, 123.45678912345)::Nanosecond == Nanosecond(123456789123)
     @test period_decimal(Day, 123.45678912345)::Nanosecond == Nanosecond(10666666580266080)
+
+    InverseFunctions.test_inverse(Base.Fix1(period_decimal, Day), Second(456); compare=isequal)
+    InverseFunctions.test_inverse(Base.Fix1(period_decimal, Day), 123.456; compare=isequal)
 end
 
 @testset "convert" begin
@@ -149,13 +158,6 @@ end
         @test map(x -> x.value, sort(xs)) == sort(vals)
     end
 end
-
-
-using Documenter, DocumenterMarkdown
-DocMeta.setdocmeta!(DateFormats, :DocTestSetup, :(using DateFormats; using Dates); recursive=true)
-makedocs(format=Markdown(), modules=[DateFormats], root="../docs")
-mv("../docs/build/README.md", "../README.md", force=true)
-rm("../docs/build", recursive=true)
 
 
 import Aqua

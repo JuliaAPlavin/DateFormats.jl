@@ -1,6 +1,7 @@
 module DateFormats
 
 using Dates
+using InverseFunctions
 using DocStringExtensions
 @template (FUNCTIONS, METHODS, MACROS) = """$(TYPEDSIGNATURES)\n$(DOCSTRING)"""
 @template TYPES = """$(TYPEDEF)\n$(TYPEDFIELDS)\n$(DOCSTRING)"""
@@ -147,5 +148,8 @@ period_decimal(P::Type{<:DTPeriod}, T::Type{<:DTPeriod}) = period_decimal(P, T(1
 period_decimal(p::DTPeriod, t::DTPeriod) = Dates.tons(t) / Dates.tons(p)
 period_decimal(_, ::Missing) = missing
 
+
+InverseFunctions.inverse(f::Union{typeof.((modified_julian_day, julian_day, unix_time, yeardecimal))...}) = f
+InverseFunctions.inverse(f::Base.Fix1{typeof(period_decimal)}) = f
 
 end
