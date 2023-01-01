@@ -162,11 +162,6 @@ end
 
 import Aqua
 import CompatHelperLocal
-@testset begin
-    CompatHelperLocal.@check()
-    # see broken test in "from string"
-    # Aqua.test_ambiguities(DateFormats, recursive=false)
-    Aqua.test_unbound_args(DateFormats)
-    Aqua.test_undefined_exports(DateFormats)
-    Aqua.test_stale_deps(DateFormats)
-end
+
+CompatHelperLocal.@check()
+Aqua.test_all(DateFormats)
