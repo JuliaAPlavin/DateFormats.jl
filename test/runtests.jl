@@ -68,6 +68,16 @@ end
     end
 end
 
+@testitem "TimeZones" begin
+    using TimeZones
+
+    dt = ZonedDateTime(2020, 6, 14, tz"Europe/Moscow")
+    @test julian_day(dt) == 2.4590145e6 - 3/24
+    @test mjd(dt) == 59014 - 3/24
+    @test unix_time(dt) == 1.5920928e9 - 3*3600
+    @test yeardecimal(dt) == 2020.4504781420765
+end
+
 @testitem "missing" begin
     using Dates
 
