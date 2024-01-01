@@ -10,7 +10,8 @@ using DocStringExtensions
 export
     Date, DateTime, Dates,
     JulianDay, JD, ModifiedJulianDay, MJD, YearDecimal, UnixTime,
-    mjd, modified_julian_day, julian_day, unix_time, yeardecimal, period_decimal
+    mjd, modified_julian_day, julian_day, unix_time, yeardecimal,
+    period_decimal, *ₜ, /ₜ
 
 const DTM = Union{Date, DateTime}
 const DTPeriod = Union{TimePeriod, DatePeriod, Dates.CompoundPeriod}
@@ -142,14 +143,34 @@ function yeardecimal(years::Real)
 end
 
 """ Create a time period `t * P` rounded to a nanosecond. """
-period_decimal(P::Type{<:DTPeriod}, t::Real) = Nanosecond(round(Int, t * Dates.tons(P(1))))
+function *ₜ end
+*ₜ(t::Real, P::Type{<:DTPeriod}) = t *ₜ P(1)
+*ₜ(t::Real, p::DTPeriod) = Nanosecond(round(Int, t * Dates.tons(p)))
+*ₜ(::Missing, _) = missing
+*ₜ(_, ::Missing) = missing
+*ₜ(::Missing, ::Missing) = missing
 
-""" Represent `t` as a decimal number of `P` periods.
+""" Represent `t` as a decimal number of `P` periods. """
+function /ₜ end
+/ₜ(T::Type{<:DTPeriod}, P::Type{<:DTPeriod}) = T(1) /ₜ P(1)
+/ₜ(t::DTPeriod, P::Type{<:DTPeriod}) = t /ₜ P(1)
+/ₜ(t::DTPeriod, p::DTPeriod) = Dates.tons(t) / Dates.tons(p)
+/ₜ(::Missing, _) = missing
+/ₜ(_, ::Missing) = missing
+/ₜ(::Missing, ::Missing) = missing
 
-`P` can be a type like `Day`, or a value like `Day(5)`. """
-period_decimal(P::Type{<:DTPeriod}, t::DTPeriod) = period_decimal(P(1), t)
-period_decimal(P::Type{<:DTPeriod}, T::Type{<:DTPeriod}) = period_decimal(P, T(1))
-period_decimal(p::DTPeriod, t::DTPeriod) = Dates.tons(t) / Dates.tons(p)
+InverseFunctions.inverse(f::Base.Fix2{typeof(*ₜ)}) = Base.Fix2(/ₜ, f.x)
+InverseFunctions.inverse(f::Base.Fix2{typeof(/ₜ)}) = Base.Fix2(*ₜ, f.x)
+
+
+""" Use `t *ₜ P` or `t /ₜ P` instead. """
+function period_decimal end
+
+period_decimal(P::Type{<:DTPeriod}, t::Real) = t *ₜ P
+
+period_decimal(P::Type{<:DTPeriod}, t::DTPeriod) = t /ₜ P
+period_decimal(P::Type{<:DTPeriod}, T::Type{<:DTPeriod}) = T /ₜ P
+period_decimal(p::DTPeriod, t::DTPeriod) = t /ₜ p
 period_decimal(_, ::Missing) = missing
 
 

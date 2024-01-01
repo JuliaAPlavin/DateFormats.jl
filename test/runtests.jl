@@ -67,7 +67,12 @@ end
 end
 
 @testset "missing" begin
-    @testset for f in [julian_day, modified_julian_day, yeardecimal, unix_time, x->period_decimal(Second, x)]
+    @testset for f in [
+            julian_day, modified_julian_day, yeardecimal, unix_time,
+            Base.Fix1(period_decimal, Second),
+            Base.Fix1(*ₜ, 123), Base.Fix2(*ₜ, Second), Base.Fix2(*ₜ, missing),
+            Base.Fix1(/ₜ, Second(123)), Base.Fix2(/ₜ, Second), Base.Fix2(/ₜ, missing),
+        ]
         @test f(missing) === missing
     end
 end
@@ -99,23 +104,42 @@ end
     @test yeardecimal(Day(3)) ≈ 3/365.2425
     @test yeardecimal(Millisecond(123)) ≈ 123/1000/60/60/24/365.2425
 
-    @test period_decimal(Millisecond, Millisecond(123)) ≈ 123
-    @test period_decimal(Day, Second(456)) ≈ 0.00527777777
-    @test period_decimal(Second, Day(78)) ≈ 6.7392e6
-    
-    @test period_decimal(Second, Millisecond(12) + Hour(34)) ≈ 122400.012
-    @test period_decimal(Second, Millisecond(12) + Hour(34) + Year(1)) ≈ 3.1679352012e7
-    @test period_decimal(Second(1), Millisecond(12) + Hour(34) + Year(1)) ≈ 3.1679352012e7
-    @test period_decimal(Second(5), Millisecond(12) + Hour(34) + Year(1)) ≈ 3.1679352012e7 / 5
-    
-    @test period_decimal(Second, 123)::Nanosecond == Second(123)
-    @test period_decimal(Second, 123.456)::Nanosecond == Millisecond(123456)
-    @test period_decimal(Second, 123.456789)::Nanosecond == Microsecond(123456789)
-    @test period_decimal(Second, 123.45678912345)::Nanosecond == Nanosecond(123456789123)
-    @test period_decimal(Day, 123.45678912345)::Nanosecond == Nanosecond(10666666580266080)
+    @test (123 *ₜ Second)::Nanosecond == Second(123)
+    @test (123.456 *ₜ Second)::Nanosecond == Millisecond(123456)
+    @test (123 *ₜ Second(2))::Nanosecond == Second(2*123)
+    @test (123.456 *ₜ Second(2))::Nanosecond == Millisecond(2*123456)
 
-    InverseFunctions.test_inverse(Base.Fix1(period_decimal, Day), Second(456); compare=isequal)
-    InverseFunctions.test_inverse(Base.Fix1(period_decimal, Day), 123.456; compare=isequal)
+    @test Millisecond(123) /ₜ Millisecond ≈ 123
+    @test Second(456) /ₜ Day ≈ 0.00527777777
+    @test Day(78) /ₜ Second ≈ 6.7392e6
+    @test Year /ₜ Second ≈ 3.1556952e7
+    @test (Millisecond(12) + Hour(34)) /ₜ Second ≈ 122400.012
+    @test (Millisecond(12) + Hour(34) + Year(1)) /ₜ Second ≈ 3.1679352012e7
+    @test (Millisecond(12) + Hour(34) + Year(1)) /ₜ Second(1) ≈ 3.1679352012e7
+    @test (Millisecond(12) + Hour(34) + Year(1)) /ₜ Second(5) ≈ 3.1679352012e7 / 5
+
+    InverseFunctions.test_inverse(Base.Fix2(*ₜ, Day), 123.456; compare=isequal)
+    InverseFunctions.test_inverse(Base.Fix2(*ₜ, Day(2)), 123.456; compare=isequal)
+    InverseFunctions.test_inverse(Base.Fix2(/ₜ, Day), Second(456); compare=isequal)
+    InverseFunctions.test_inverse(Base.Fix2(/ₜ, Day(2)), Second(456); compare=isequal)
+
+    @testset "deprecated" begin
+        @test period_decimal(Millisecond, Millisecond(123)) ≈ 123
+        @test period_decimal(Day, Second(456)) ≈ 0.00527777777
+        @test period_decimal(Second, Day(78)) ≈ 6.7392e6
+        @test period_decimal(Second, Millisecond(12) + Hour(34)) ≈ 122400.012
+        @test period_decimal(Second, Millisecond(12) + Hour(34) + Year(1)) ≈ 3.1679352012e7
+        @test period_decimal(Second(1), Millisecond(12) + Hour(34) + Year(1)) ≈ 3.1679352012e7
+        @test period_decimal(Second(5), Millisecond(12) + Hour(34) + Year(1)) ≈ 3.1679352012e7 / 5
+        
+        @test period_decimal(Second, 123)::Nanosecond == Second(123)
+        @test period_decimal(Second, 123.456)::Nanosecond == Millisecond(123456)
+        @test period_decimal(Second, 123.456789)::Nanosecond == Microsecond(123456789)
+        @test period_decimal(Second, 123.45678912345)::Nanosecond == Nanosecond(123456789123)
+        @test period_decimal(Day, 123.45678912345)::Nanosecond == Nanosecond(10666666580266080)
+        InverseFunctions.test_inverse(Base.Fix1(period_decimal, Day), Second(456); compare=isequal)
+        InverseFunctions.test_inverse(Base.Fix1(period_decimal, Day), 123.456; compare=isequal)
+    end
 end
 
 @testset "convert" begin
