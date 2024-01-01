@@ -77,7 +77,7 @@ end
     end
 end
 
-@testset "inverse" begin
+VERSION ≥ v"1.9-" && @testset "inverse" begin
     @testset for f in [julian_day, modified_julian_day, yeardecimal, unix_time]
         x = DateTime(2020, 2, 3)
         @test f(f(x)) === x
@@ -95,6 +95,14 @@ end
         end
         InverseFunctions.test_inverse(f, x; compare=isequal)
     end
+
+    InverseFunctions.test_inverse(Base.Fix2(*ₜ, Day), 123.456; compare=isequal)
+    InverseFunctions.test_inverse(Base.Fix2(*ₜ, Day(2)), 123.456; compare=isequal)
+    InverseFunctions.test_inverse(Base.Fix2(/ₜ, Day), Second(456); compare=isequal)
+    InverseFunctions.test_inverse(Base.Fix2(/ₜ, Day(2)), Second(456); compare=isequal)
+
+    InverseFunctions.test_inverse(Base.Fix1(period_decimal, Day), Second(456); compare=isequal)
+    InverseFunctions.test_inverse(Base.Fix1(period_decimal, Day), 123.456; compare=isequal)
 end
 
 @testset "decimal period" begin
@@ -118,11 +126,6 @@ end
     @test (Millisecond(12) + Hour(34) + Year(1)) /ₜ Second(1) ≈ 3.1679352012e7
     @test (Millisecond(12) + Hour(34) + Year(1)) /ₜ Second(5) ≈ 3.1679352012e7 / 5
 
-    InverseFunctions.test_inverse(Base.Fix2(*ₜ, Day), 123.456; compare=isequal)
-    InverseFunctions.test_inverse(Base.Fix2(*ₜ, Day(2)), 123.456; compare=isequal)
-    InverseFunctions.test_inverse(Base.Fix2(/ₜ, Day), Second(456); compare=isequal)
-    InverseFunctions.test_inverse(Base.Fix2(/ₜ, Day(2)), Second(456); compare=isequal)
-
     @testset "deprecated" begin
         @test period_decimal(Millisecond, Millisecond(123)) ≈ 123
         @test period_decimal(Day, Second(456)) ≈ 0.00527777777
@@ -137,8 +140,6 @@ end
         @test period_decimal(Second, 123.456789)::Nanosecond == Microsecond(123456789)
         @test period_decimal(Second, 123.45678912345)::Nanosecond == Nanosecond(123456789123)
         @test period_decimal(Day, 123.45678912345)::Nanosecond == Nanosecond(10666666580266080)
-        InverseFunctions.test_inverse(Base.Fix1(period_decimal, Day), Second(456); compare=isequal)
-        InverseFunctions.test_inverse(Base.Fix1(period_decimal, Day), 123.456; compare=isequal)
     end
 end
 
@@ -199,4 +200,4 @@ import Aqua
 import CompatHelperLocal
 
 CompatHelperLocal.@check()
-Aqua.test_all(DateFormats)
+Aqua.test_all(DateFormats, project_toml_formatting=false)
