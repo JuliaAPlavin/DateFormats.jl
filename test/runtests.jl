@@ -1,11 +1,9 @@
-using Test
-using Dates
-using InverseFunctions
-using DateFormats
-const DF = DateFormats
+using TestItems
+using TestItemRunner
+@run_package_tests
 
 
-@testset "jd" begin
+@testitem "jd" begin
     @test modified_julian_day(59014) === Date(2020, 6, 14)  # Date
     @test modified_julian_day(59014.) === DateTime(2020, 6, 14)  # DateTime
     @test modified_julian_day(59014.30417) === DateTime(2020, 6, 14, 7, 18, 0, 288)
@@ -19,7 +17,9 @@ const DF = DateFormats
     @test julian_day(DateTime(2020, 6, 14, 7, 18, 0, 288)) ≈ 2.45901480417e6
 end
 
-@testset "unix" begin
+@testitem "unix" begin
+    using Dates
+
     @test unix_time(1.5920928e9) === DateTime(2020, 6, 14)
     @test unix_time(1.592119080288e9) === DateTime(2020, 6, 14, 7, 18, 0, 288)
     @test unix_time(Millisecond, 1.592119080288e12) === DateTime(2020, 6, 14, 7, 18, 0, 288)
@@ -28,7 +28,9 @@ end
     @test unix_time(Millisecond, DateTime(2020, 6, 14, 7, 18, 0, 288)) ≈ 1.592119080288e12
 end
 
-@testset "yeardecimal datetime" begin
+@testitem "yeardecimal datetime" begin
+    import DateFormats as DF
+
     @test DF.yearfrac(Date(2019, 1, 1)) ≈ 0
     @test DF.yearfrac(Date(2019, 12, 31)) ≈ 1 - 1/365
     @test DF.yearfrac(Date(2020, 1, 1)) ≈ 0
@@ -66,7 +68,9 @@ end
     end
 end
 
-@testset "missing" begin
+@testitem "missing" begin
+    using Dates
+
     @testset for f in [
             julian_day, modified_julian_day, yeardecimal, unix_time,
             Base.Fix1(period_decimal, Second),
@@ -77,7 +81,10 @@ end
     end
 end
 
-VERSION ≥ v"1.9-" && @testset "inverse" begin
+@testitem "inverse" begin
+    using Dates
+    using InverseFunctions
+
     @testset for f in [julian_day, modified_julian_day, yeardecimal, unix_time]
         x = DateTime(2020, 2, 3)
         @test f(f(x)) === x
@@ -105,7 +112,9 @@ VERSION ≥ v"1.9-" && @testset "inverse" begin
     InverseFunctions.test_inverse(Base.Fix1(period_decimal, Day), 123.456; compare=isequal)
 end
 
-@testset "decimal period" begin
+@testitem "decimal period" begin
+    using Dates
+
     @test yeardecimal(Year(1)) == 1
     @test yeardecimal(Year(123)) == 123
     @test yeardecimal(Month(1)) ≈ 1/12
@@ -135,7 +144,7 @@ end
     end
 end
 
-@testset "convert" begin
+@testitem "convert" begin
     @test convert(DateTime, YearDecimal(2019 + 0.5/365)) === DateTime(2019, 1, 1, 12)
     @test convert(YearDecimal, DateTime(2019, 1, 1, 12)) ≈ YearDecimal(2019 + 0.5/365)
     @test convert(YearDecimal, Date(2019, 1, 1)) ≈ YearDecimal(2019 + 0/365)
@@ -151,7 +160,7 @@ end
     @test convert(DateTime, MJD(missing)) === missing
 end
 
-@testset "constructor" begin
+@testitem "constructor" begin
     x = rand() * 5e3
     @test DateTime(YearDecimal(x)) == convert(DateTime, YearDecimal(x))
     @test DateTime(JD(x)) == convert(DateTime, JD(x))
@@ -168,7 +177,7 @@ end
     @test MJD(y) == convert(MJD, y)
 end
 
-@testset "from string" begin
+@testitem "from string" begin
     @test yeardecimal("2019.123") === yeardecimal(2019.123)
     @test mjd("53318.30955") === mjd(53318.30955)
     @test julian_day("53318.30955") === julian_day(53318.30955)
@@ -179,7 +188,7 @@ end
     end
 end
 
-@testset "ordering" begin
+@testitem "ordering" begin
     vals = rand(10)
     @testset for T in [JD, MJD, YearDecimal]
         xs = T.(vals)
@@ -188,8 +197,10 @@ end
 end
 
 
-import Aqua
-import CompatHelperLocal
+@testitem "_" begin
+    import Aqua
+    import CompatHelperLocal
 
-CompatHelperLocal.@check()
-Aqua.test_all(DateFormats, project_toml_formatting=false)
+    CompatHelperLocal.@check()
+    Aqua.test_all(DateFormats)
+end
