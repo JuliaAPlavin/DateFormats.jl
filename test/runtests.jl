@@ -149,6 +149,11 @@ end
     @test yeardecimal("2019.123") === yeardecimal(2019.123)
     @test mjd("53318.30955") === mjd(53318.30955)
     @test julian_day("53318.30955") === julian_day(53318.30955)
+    @views begin
+        @test yeardecimal("2019.123"[begin:end]) === yeardecimal(2019.123)
+        @test mjd("53318.30955"[begin:end]) === mjd(53318.30955)
+        @test julian_day("53318.30955"[begin:end]) === julian_day(53318.30955)
+    end
 end
 
 @testset "ordering" begin

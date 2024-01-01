@@ -101,7 +101,7 @@ Base.convert(T::Type{<:DTM}, x::MYTYPES) = T(x)
 modified_julian_day(::Missing) = missing
 modified_julian_day(x::DTM) = julian_day(x) - 2400000.5
 modified_julian_day(x::Real) = julian_day(2400000.5 + x)
-modified_julian_day(x::String) = modified_julian_day(parse(Float64, x))
+modified_julian_day(x::AbstractString) = modified_julian_day(parse(Float64, x))
 const mjd = modified_julian_day
 
 """ Convert from/to DateTime to/from julian days. """
@@ -109,7 +109,7 @@ julian_day(::Missing) = missing
 julian_day(x::Date) = julian_day(DateTime(x))
 julian_day(x::DTM) = datetime2julian(x)
 julian_day(x::Real) = julian2datetime(x)
-julian_day(x::String) = julian_day(parse(Float64, x))
+julian_day(x::AbstractString) = julian_day(parse(Float64, x))
 
 """ Convert from/to DateTime to/from julian days. """
 unix_time(x) = unix_time(Second, x)
@@ -119,7 +119,7 @@ unix_time(::Type{Second}, x::Real) = unix2datetime(x)
 unix_time(T::Type, x::DTM) = unix_time(Second, x) / period_decimal(Second, T)
 unix_time(T::Type, x::Date) = unix_time(T, DateTime(x))
 unix_time(T::Type, x::Real) = unix2datetime(x * period_decimal(Second, T))
-unix_time(T::Type, x::String) = unix_time(T, parse(Float64, x))
+unix_time(T::Type, x::AbstractString) = unix_time(T, parse(Float64, x))
 
 
 yearfrac(dtm::T) where {T <: DTM} = (dtm - T(year(dtm))) / (T(year(dtm) + 1) - T(year(dtm)))
@@ -128,7 +128,7 @@ yearfrac(dtm::T) where {T <: DTM} = (dtm - T(year(dtm))) / (T(year(dtm) + 1) - T
 yeardecimal(dtm::DTM) = year(dtm) + yearfrac(dtm)
 yeardecimal(::Missing) = missing
 yeardecimal(t::DTPeriod) = period_decimal(Year, t)
-yeardecimal(x::String) = yeardecimal(parse(Float64, x))
+yeardecimal(x::AbstractString) = yeardecimal(parse(Float64, x))
 
 function yeardecimal(years::Real)
     years_whole = round(Int, years)
