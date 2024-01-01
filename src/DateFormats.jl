@@ -39,9 +39,11 @@ end
 
 const MYTYPES = Union{JD, MJD, YearDecimal, UnixTime}
 
-Base.isapprox(a::T, b::T; kwargs...) where {T <: MYTYPES} = isapprox(a.value, b.value; kwargs...)
-Base.isless(a::T, b::T) where {T <: MYTYPES} = isless(a.value, b.value)
-Base.isequal(a::T, b::T) where {T <: MYTYPES} = isequal(a.value, b.value)
+for T in (JD, MJD, YearDecimal, UnixTime)
+    @eval Base.isapprox(a::$T, b::$T; kwargs...) = isapprox(a.value, b.value; kwargs...)
+    @eval Base.isless(a::$T, b::$T) = isless(a.value, b.value)
+    @eval Base.isequal(a::$T, b::$T) = isequal(a.value, b.value)
+end
 
 """ Convert from a Date or DateTime.
 
@@ -99,7 +101,9 @@ Base.convert(T::Type{<:DTM}, x::MYTYPES) = T(x)
 
 """ Convert from/to DateTime to/from modified julian days. """
 modified_julian_day(::Missing) = missing
-modified_julian_day(x::DTM) = julian_day(x) - 2400000.5
+modified_julian_day(x::Date) = convert(Int, modified_julian_day(DateTime(x)))
+modified_julian_day(x::DateTime) = julian_day(x) - 2400000.5
+modified_julian_day(x::Integer) = convert(Date, julian_day(2400000.5 + x))
 modified_julian_day(x::Real) = julian_day(2400000.5 + x)
 modified_julian_day(x::AbstractString) = modified_julian_day(parse(Float64, x))
 const mjd = modified_julian_day

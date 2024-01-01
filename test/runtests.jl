@@ -6,8 +6,10 @@ const DF = DateFormats
 
 
 @testset "jd" begin
-    @test modified_julian_day(59014) === DateTime(2020, 6, 14)  # ensure it's not a Date
+    @test modified_julian_day(59014) === Date(2020, 6, 14)  # Date
+    @test modified_julian_day(59014.) === DateTime(2020, 6, 14)  # DateTime
     @test modified_julian_day(59014.30417) === DateTime(2020, 6, 14, 7, 18, 0, 288)
+    @test modified_julian_day(Date(2020, 6, 14)) === 59014  # int
     @test modified_julian_day(DateTime(2020, 6, 14)) === 59014.0  # float
     @test modified_julian_day(DateTime(2020, 6, 14, 7, 18, 0, 288)) ≈ 59014.30417
 
@@ -81,7 +83,11 @@ end
         InverseFunctions.test_inverse(f, x; compare=isequal)
 
         x = Date(2020, 2, 3)
-        @test f(f(x)) === DateTime(x)
+        if f === modified_julian_day
+            @test f(f(x)) === Date(x)
+        else
+            @test f(f(x)) === DateTime(x)
+        end
         InverseFunctions.test_inverse(f, x; compare=isequal)
     end
 end
