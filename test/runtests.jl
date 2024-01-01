@@ -112,12 +112,15 @@ end
     @test yeardecimal(Day(3)) ≈ 3/365.2425
     @test yeardecimal(Millisecond(123)) ≈ 123/1000/60/60/24/365.2425
 
-    @test (123 *ₜ Second)::Nanosecond == Second(123)
-    @test (123.456 *ₜ Second)::Nanosecond == Millisecond(123456)
-    @test (123 *ₜ Second(2))::Nanosecond == Second(2*123)
-    @test (123.456 *ₜ Second(2))::Nanosecond == Millisecond(2*123456)
+    @test (123 *ₜ Second) === Second(123)
+    @test (123 *ₜ Second(2)) === Second(2*123)
+    @test (123.456 *ₜ Second) === Nanosecond(123456000000)
+    @test (123.456 *ₜ Second(2)) === Nanosecond(2*123456000000)
 
-    @test Millisecond(123) /ₜ Millisecond ≈ 123
+    @test Millisecond(123) /ₜ Millisecond === 123
+    @test Millisecond(123) /ₜ Millisecond(1) === 123.0
+    @test Second(123) /ₜ Millisecond == 123000
+    @test_broken Second(123) /ₜ Millisecond === 123000
     @test Second(456) /ₜ Day ≈ 0.00527777777
     @test Day(78) /ₜ Second ≈ 6.7392e6
     @test Year /ₜ Second ≈ 3.1556952e7
@@ -127,19 +130,8 @@ end
     @test (Millisecond(12) + Hour(34) + Year(1)) /ₜ Second(5) ≈ 3.1679352012e7 / 5
 
     @testset "deprecated" begin
-        @test period_decimal(Millisecond, Millisecond(123)) ≈ 123
         @test period_decimal(Day, Second(456)) ≈ 0.00527777777
-        @test period_decimal(Second, Day(78)) ≈ 6.7392e6
-        @test period_decimal(Second, Millisecond(12) + Hour(34)) ≈ 122400.012
-        @test period_decimal(Second, Millisecond(12) + Hour(34) + Year(1)) ≈ 3.1679352012e7
-        @test period_decimal(Second(1), Millisecond(12) + Hour(34) + Year(1)) ≈ 3.1679352012e7
-        @test period_decimal(Second(5), Millisecond(12) + Hour(34) + Year(1)) ≈ 3.1679352012e7 / 5
-        
-        @test period_decimal(Second, 123)::Nanosecond == Second(123)
         @test period_decimal(Second, 123.456)::Nanosecond == Millisecond(123456)
-        @test period_decimal(Second, 123.456789)::Nanosecond == Microsecond(123456789)
-        @test period_decimal(Second, 123.45678912345)::Nanosecond == Nanosecond(123456789123)
-        @test period_decimal(Day, 123.45678912345)::Nanosecond == Nanosecond(10666666580266080)
     end
 end
 

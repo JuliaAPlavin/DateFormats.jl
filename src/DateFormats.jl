@@ -106,6 +106,7 @@ Create a time period `t * p` rounded to a nanosecond. """
 function *ₜ end
 *ₜ(t::Real, P::Type{<:DTPeriod}) = t *ₜ P(1)
 *ₜ(t::Real, p::DTPeriod) = Nanosecond(round(Int, t * Dates.tons(p)))
+*ₜ(t::Integer, p::P) where {P <: Union{TimePeriod, DatePeriod}} = P(t * p.value)
 *ₜ(::Missing, _) = missing
 *ₜ(_, ::Missing) = missing
 *ₜ(::Missing, ::Missing) = missing
@@ -117,6 +118,8 @@ function /ₜ end
 /ₜ(T::Type{<:DTPeriod}, P::Type{<:DTPeriod}) = T(1) /ₜ P(1)
 /ₜ(t::DTPeriod, P::Type{<:DTPeriod}) = t /ₜ P(1)
 /ₜ(t::DTPeriod, p::DTPeriod) = Dates.tons(t) / Dates.tons(p)
+/ₜ(t::T, ::Type{T}) where {T <: Union{TimePeriod, DatePeriod}} = t.value
+/ₜ(t::T, p::T) where {T <: Union{TimePeriod, DatePeriod}} = t.value / p.value
 /ₜ(::Missing, _) = missing
 /ₜ(_, ::Missing) = missing
 /ₜ(::Missing, ::Missing) = missing
