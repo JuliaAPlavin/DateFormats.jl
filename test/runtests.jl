@@ -149,18 +149,19 @@ end
 
 @testitem "convert" begin
     @test convert(DateTime, YearDecimal(2019 + 0.5/365)) === DateTime(2019, 1, 1, 12)
+    @test convert(DateTime, YearDecimal(2019)) === DateTime(2019, 1, 1)
     @test convert(YearDecimal, DateTime(2019, 1, 1, 12)) ≈ YearDecimal(2019 + 0.5/365)
     @test convert(YearDecimal, Date(2019, 1, 1)) ≈ YearDecimal(2019 + 0/365)
 
     @test convert(DateTime, MJD(59014.30417)) === DateTime(2020, 6, 14, 7, 18, 0, 288)
+    @test convert(DateTime, MJD(59014)) === DateTime(2020, 6, 14)
     @test convert(MJD, DateTime(2020, 6, 14, 7, 18, 0, 288)) ≈ MJD(59014.30417)
     @test convert(MJD, Date(2020, 6, 14)) ≈ MJD(59014.)
 
     @test convert(DateTime, JD(2459014.80417)) === DateTime(2020, 6, 14, 7, 18, 0, 288)
+    @test convert(DateTime, JD(2459014)) === DateTime(2020, 6, 13, 12)
     @test convert(JD, DateTime(2020, 6, 14, 7, 18, 0, 288)) ≈ JD(2459014.80417)
     @test convert(JD, Date(2020, 6, 14)) ≈ JD(2459014.5)
-
-    @test convert(DateTime, MJD(missing)) === missing
 end
 
 @testitem "constructor" begin

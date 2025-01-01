@@ -24,12 +24,12 @@ for (T, f, desc) in (
         """    $($T){T <: Real}
         
         Datetime representation as a $($desc). """
-        struct $T{T <: RealM}
+        struct $T{T <: RealM} <: Dates.AbstractTime
             value::T
         end
 
         $T(x::DTM) = $T($f(x))
-        DateTime(x::$T) = $f(x.value)
+        DateTime(x::$T) = DateTime($f(x.value))
 
         Base.isapprox(a::$T, b::$T; kwargs...) = isapprox(a.value, b.value; kwargs...)
         Base.isless(a::$T, b::$T) = isless(a.value, b.value)
