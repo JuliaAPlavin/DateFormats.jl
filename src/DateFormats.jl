@@ -44,8 +44,14 @@ const ModifiedJulianDay = MJD
 const _MYTYPES = (JD, MJD, YearDecimal, UnixTime)
 const MYTYPES = Union{JD, MJD, YearDecimal, UnixTime}
 Date(x::MYTYPES) = Date(DateTime(x))
+Time(x::MYTYPES) = Time(DateTime(x))
 Base.convert(T::Type{<:MYTYPES}, x::DTM) = T(x)
 Base.convert(T::Type{<:DTM}, x::MYTYPES) = T(x)
+
+for func in [:year, :quarter, :month, :week, :day, :hour, :minute, :second, :millisecond, :dayofmonth, :yearmonth, :monthday, :yearmonthday]
+    # could all be `@eval @accessor Dates.$func() = ...`, but don't want to depend on Accessors
+    @eval Dates.$func(x::MYTYPES) = $func(convert(DateTime, x))
+end
 
 for T in _MYTYPES
     # needed for mean():

@@ -98,11 +98,11 @@ end
             @test f(f(dtd)) === dtd
             @test f(f(dt)) === dt
 
-        if f === modified_julian_day
+            if f === modified_julian_day
                 @test f(f(d)) === d
-        else
+            else
                 @test f(f(d)) === dtd
-        end
+            end
 
             InverseFunctions.test_inverse(f, dtd; compare=isequal)
             InverseFunctions.test_inverse(f, dt; compare=isequal)
@@ -204,6 +204,23 @@ end
     @testset for T in [JD, MJD, YearDecimal]
         xs = T.(vals)
         @test map(x -> x.value, sort(xs)) == sort(vals)
+    end
+end
+
+@testitem "datefuncs" begin
+    using Accessors
+
+    @testset for T in [JD, MJD, YearDecimal]
+        x = T(DateTime(2002, 3, 4, 5, 6, 7, 8))
+        @test year(x) == 2002
+        @test yearmonthday(x) == (2002, 3, 4)
+        @test second(x) == 7
+        @test Date(x) == Date(2002, 3, 4)
+        @test Time(x) == Time(5, 6, 7, 8)
+
+        @testset for f in (year, day, month, minute, second)
+            Accessors.test_getset_laws(f, T(123.), 1, 10)
+        end
     end
 end
 
