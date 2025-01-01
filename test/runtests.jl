@@ -205,6 +205,15 @@ end
     end
 end
 
+@testitem "statistics" begin
+    using Statistics
+
+    @test mean([JD(123), JD(456), JD(789)]) ≈ JD(456)
+    @test median([JD(123), JD(789)]) === JD(456.)
+    @test median([JD(123), JD(456), JD(789)]) === JD(456.)
+    @test median(Any[JD(123), JD(789.)]) === JD(456.)
+end
+
 
 @testitem "_" begin
     import Aqua

@@ -41,10 +41,17 @@ end
 const JulianDay = JD
 const ModifiedJulianDay = MJD
 
+const _MYTYPES = (JD, MJD, YearDecimal, UnixTime)
 const MYTYPES = Union{JD, MJD, YearDecimal, UnixTime}
 Date(x::MYTYPES) = Date(DateTime(x))
 Base.convert(T::Type{<:MYTYPES}, x::DTM) = T(x)
 Base.convert(T::Type{<:DTM}, x::MYTYPES) = T(x)
+
+for T in _MYTYPES
+    # needed for mean():
+    @eval Base.:(/)(x::$T, y::Real) = $T(x.value / y)
+    @eval Base.:+(x::$T, y::$T) = $T(x.value + y.value)
+end
 
 
 """    modified_julian_day(x)
