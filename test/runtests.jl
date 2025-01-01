@@ -91,21 +91,23 @@ end
     using InverseFunctions
 
     @testset for f in [julian_day, modified_julian_day, yeardecimal, unix_time]
-        x = DateTime(2020, 2, 3)
-        @test f(f(x)) === x
-        InverseFunctions.test_inverse(f, x; compare=isequal)
+        @testset for dt in [DateTime(2020, 2, 3, 4, 5, 6), DateTime(2003, 10, 5, 6, 7, 8)]
+            d = Date(dt)
+            dtd = DateTime(d)
 
-        x = DateTime(2020, 2, 3, 4, 5, 6)
-        @test f(f(x)) === x
-        InverseFunctions.test_inverse(f, x; compare=isequal)
+            @test f(f(dtd)) === dtd
+            @test f(f(dt)) === dt
 
-        x = Date(2020, 2, 3)
         if f === modified_julian_day
-            @test f(f(x)) === Date(x)
+                @test f(f(d)) === d
         else
-            @test f(f(x)) === DateTime(x)
+                @test f(f(d)) === dtd
         end
-        InverseFunctions.test_inverse(f, x; compare=isequal)
+
+            InverseFunctions.test_inverse(f, dtd; compare=isequal)
+            InverseFunctions.test_inverse(f, dt; compare=isequal)
+            InverseFunctions.test_inverse(f, d; compare=isequal)
+        end
     end
 
     InverseFunctions.test_inverse(Base.Fix2(*ₜ, Day), 123.456; compare=isequal)

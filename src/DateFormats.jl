@@ -102,7 +102,7 @@ yeardecimal(t::DTPeriod) = period_decimal(Year, t)
 yeardecimal(x::AbstractString) = yeardecimal(parse(Float64, x))
 
 function yeardecimal(years::Real)
-    years_whole = round(Int, years)
+    years_whole = floor(Int, years)
     year_ms = DateTime(years_whole + 1) - DateTime(years_whole) |> Dates.value
     period_ms = year_ms * (years - years_whole)
     return DateTime(years_whole) + Millisecond(round(Int64, period_ms))
