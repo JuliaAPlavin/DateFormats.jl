@@ -162,6 +162,11 @@ end
     @test convert(DateTime, JD(2459014)) === DateTime(2020, 6, 13, 12)
     @test convert(JD, DateTime(2020, 6, 14, 7, 18, 0, 288)) ≈ JD(2459014.80417)
     @test convert(JD, Date(2020, 6, 14)) ≈ JD(2459014.5)
+
+    @test JD{Float32}(DateTime(2020, 6, 14, 7, 18, 0, 288)) === JD(2.4590148f6)
+    @test convert(JD{Float32}, DateTime(2020, 6, 14, 7, 18, 0, 288)) === JD(2.4590148f6)
+    @test_throws InexactError convert(JD{Int}, DateTime(2020, 6, 14, 7, 18, 0, 288))
+    @test_throws InexactError JD{Int}(DateTime(2020, 6, 14, 7, 18, 0, 288))
 end
 
 @testitem "constructor" begin

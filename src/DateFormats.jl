@@ -29,6 +29,7 @@ for (T, f, desc) in (
         end
 
         $T(x::DTM) = $T($f(x))
+        (::Type{$T{T}})(x::DTM) where {T <: RealM} = $T{T}($f(x))
         DateTime(x::$T) = DateTime($f(x.value))
 
         Base.isapprox(a::$T, b::$T; kwargs...) = isapprox(a.value, b.value; kwargs...)
