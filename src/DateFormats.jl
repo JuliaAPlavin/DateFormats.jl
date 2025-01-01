@@ -4,7 +4,7 @@ using Reexport
 @reexport using Dates
 
 export
-    Date, DateTime, Dates,
+    Dates,
     JulianDay, JD, ModifiedJulianDay, MJD, YearDecimal, UnixTime,
     mjd, modified_julian_day, julian_day, unix_time, yeardecimal,
     period_decimal, *ₜ, /ₜ
@@ -43,8 +43,8 @@ const ModifiedJulianDay = MJD
 
 const _MYTYPES = (JD, MJD, YearDecimal, UnixTime)
 const MYTYPES = Union{JD, MJD, YearDecimal, UnixTime}
-Date(x::MYTYPES) = Date(DateTime(x))
-Time(x::MYTYPES) = Time(DateTime(x))
+Dates.Date(x::MYTYPES) = Date(DateTime(x))
+Dates.Time(x::MYTYPES) = Time(DateTime(x))
 Base.convert(T::Type{<:MYTYPES}, x::DTM) = T(x)
 Base.convert(T::Type{<:DTM}, x::MYTYPES) = T(x)
 
