@@ -1,6 +1,7 @@
 module DateFormats
 
-using Dates
+using Reexport
+@reexport using Dates
 
 export
     Date, DateTime, Dates,
