@@ -233,6 +233,15 @@ end
     @test median(Any[JD(123), JD(789.)]) === JD(456.)
 end
 
+@testitem "intervals" begin
+    using IntervalSets
+
+    @test yeardecimal(1..2) === DateTime(1)..DateTime(2)
+    @test yeardecimal(1..2.5) === DateTime(1)..DateTime(2, 7, 2, 12)
+    @test yeardecimal(Date(1)..Date(2)) === 1.0..2.0
+    @test mjd(Date(1)..Date(2)) === (-678575)..(-678210)
+end
+
 
 @testitem "_" begin
     import Aqua
