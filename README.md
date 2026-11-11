@@ -1,6 +1,6 @@
 # Overview
 
-Common date and datetime representation formats: Julian days, modified Julian days, unix time, decimal numbers of years and other periods. These formats can be converted to/from `Date`s and `DateTime`s.
+Common date and datetime representation formats: Julian days, modified Julian days, Julian epochs, unix time, decimal numbers of years and other periods. These formats can be converted to/from `Date`s and `DateTime`s.
 
 # Examples
 
@@ -28,6 +28,15 @@ julia> yeardecimal(Date(2020, 7, 2))
 
 julia> yeardecimal(2000.5)
 2000-07-02T00:00:00
+```
+
+Julian epochs, in years of 365.25 days from J2000:
+```julia
+julia> julian_epoch(DateTime(2016, 1, 1, 12))
+2016.0
+
+julia> julian_epoch(2020.5)
+2020-07-02T03:00:00
 ```
 
 Fractional date/time periods use `*ₜ` to multiply and `/ₜ` to divide.

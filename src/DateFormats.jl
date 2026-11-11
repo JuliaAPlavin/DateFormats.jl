@@ -6,7 +6,7 @@ using Reexport
 export
     Dates,
     JulianDay, JD, ModifiedJulianDay, MJD, YearDecimal, UnixTime,
-    mjd, modified_julian_day, julian_day, unix_time, yeardecimal,
+    mjd, modified_julian_day, julian_day, julian_epoch, unix_time, yeardecimal,
     period_decimal, *ₜ, /ₜ
 
 
@@ -81,6 +81,15 @@ julian_day(x::Date) = julian_day(DateTime(x))
 julian_day(x::DTM) = datetime2julian(x)
 julian_day(x::Real) = julian2datetime(x)
 julian_day(x::AbstractString) = julian_day(parse(Float64, x))
+
+"""    julian_epoch(x)
+
+Convert between Date[Time] and Julian epochs represented as a number or a string: years of 365.25 days from J2000 (`2000.0` is `2000-01-01T12:00:00`). """
+function julian_epoch end
+julian_epoch(::Missing) = missing
+julian_epoch(x::DTM) = 2000 + (julian_day(x) - 2451545) / 365.25
+julian_epoch(x::Real) = julian_day(2451545 + (x - 2000) * 365.25)
+julian_epoch(x::AbstractString) = julian_epoch(parse(Float64, x))
 
 """    unix_time(x)
 

@@ -1,8 +1,8 @@
 module TimeZonesExt
 using TimeZones
-import DateFormats: modified_julian_day, julian_day, unix_time, yeardecimal
+import DateFormats: modified_julian_day, julian_day, julian_epoch, unix_time, yeardecimal
 
-for f in (:julian_day, :modified_julian_day, :yeardecimal, :unix_time)
+for f in (:julian_day, :modified_julian_day, :julian_epoch, :yeardecimal, :unix_time)
     @eval $f(zdt::ZonedDateTime) = $f(DateTime(zdt, UTC))
 end
 

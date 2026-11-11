@@ -17,6 +17,27 @@ using TestItemRunner
     @test julian_day(DateTime(2020, 6, 14, 7, 18, 0, 288)) ≈ 2.45901480417e6
 end
 
+@testitem "julian epoch" begin
+    # expected values computed independently with astropy
+    @testset for (dt, j) in [
+            (DateTime(2000, 1, 1, 12), 2000),
+            (DateTime(2011, 1, 1, 6), 2011),
+            (DateTime(2016, 1, 1, 12), 2016),
+            (DateTime(1999, 7, 2, 21), 1999.5),
+            (DateTime(2020, 7, 2, 3), 2020.5),
+            (DateTime(2014, 9, 22, 15, 6, 50, 140), 2014.7245167610972),
+        ]
+        @test julian_epoch(j) === dt
+        @test julian_epoch(dt) ≈ j atol=1e-11  # under a millisecond
+    end
+    @test julian_epoch(Date(2000, 1, 1)) ≈ 1999.9986310746065 atol=1e-11
+    @test julian_epoch(Date(2020, 6, 14)) ≈ 2020.4503764544831 atol=1e-11
+
+    @testset for v in [DateTime(1800, 1, 1, 0, 0, 0, 1), DateTime(2019, 12, 31, 23, 59, 59, 999), DateTime(2200, 2, 28, 12, 0, 0, 1)]
+        @test julian_epoch(julian_epoch(v)) === v
+    end
+end
+
 @testitem "unix" begin
     @test unix_time(1.5920928e9) === DateTime(2020, 6, 14)
     @test unix_time(1.592119080288e9) === DateTime(2020, 6, 14, 7, 18, 0, 288)
@@ -74,11 +95,12 @@ end
     @test mjd(dt) == 59014 - 3/24
     @test unix_time(dt) == 1.5920928e9 - 3*3600
     @test yeardecimal(dt) == 2020.4504781420765
+    @test julian_epoch(dt) ≈ 2020.4500342231351 atol=1e-11
 end
 
 @testitem "missing" begin
     @testset for f in [
-            julian_day, modified_julian_day, yeardecimal, unix_time,
+            julian_day, modified_julian_day, julian_epoch, yeardecimal, unix_time,
             Base.Fix1(period_decimal, Second),
             Base.Fix1(*ₜ, 123), Base.Fix2(*ₜ, Second), Base.Fix2(*ₜ, missing),
             Base.Fix1(/ₜ, Second(123)), Base.Fix2(/ₜ, Second), Base.Fix2(/ₜ, missing),
@@ -90,7 +112,7 @@ end
 @testitem "inverse" begin
     using InverseFunctions
 
-    @testset for f in [julian_day, modified_julian_day, yeardecimal, unix_time]
+    @testset for f in [julian_day, modified_julian_day, julian_epoch, yeardecimal, unix_time]
         @testset for dt in [DateTime(2020, 2, 3, 4, 5, 6), DateTime(2003, 10, 5, 6, 7, 8)]
             d = Date(dt)
             dtd = DateTime(d)
@@ -192,10 +214,12 @@ end
     @test yeardecimal("2019.123") === yeardecimal(2019.123)
     @test mjd("53318.30955") === mjd(53318.30955)
     @test julian_day("53318.30955") === julian_day(53318.30955)
+    @test julian_epoch("2019.123") === julian_epoch(2019.123)
     @views begin
         @test yeardecimal("2019.123"[begin:end]) === yeardecimal(2019.123)
         @test mjd("53318.30955"[begin:end]) === mjd(53318.30955)
         @test julian_day("53318.30955"[begin:end]) === julian_day(53318.30955)
+        @test julian_epoch("2019.123"[begin:end]) === julian_epoch(2019.123)
     end
 end
 
@@ -240,6 +264,8 @@ end
     @test yeardecimal(1..2.5) === DateTime(1)..DateTime(2, 7, 2, 12)
     @test yeardecimal(Date(1)..Date(2)) === 1.0..2.0
     @test mjd(Date(1)..Date(2)) === (-678575)..(-678210)
+    @test julian_epoch(2000..2016) === DateTime(2000, 1, 1, 12)..DateTime(2016, 1, 1, 12)
+    @test julian_epoch(DateTime(2000, 1, 1, 12)..DateTime(2016, 1, 1, 12)) === 2000.0..2016.0
 end
 
 
